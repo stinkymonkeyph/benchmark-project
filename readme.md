@@ -1,6 +1,6 @@
-# 🚀 FastAPI vs Rust Axum Performance Benchmark
+# 🚀 FastAPI vs Rust Axum vs Node.js TypeScript Performance Benchmark
 
-A comprehensive performance comparison between FastAPI (Python) and Axum (Rust) web frameworks. This project provides identical APIs in both frameworks and benchmarks them across various endpoints to measure throughput, latency, and resource efficiency.
+A comprehensive performance comparison between three popular web frameworks: FastAPI (Python), Axum (Rust), and Express with TypeScript (Node.js). This project provides identical APIs across all three frameworks and benchmarks them with complete CRUD operations to measure throughput, latency, and resource efficiency.
 
 ## 📋 Table of Contents
 
@@ -11,42 +11,50 @@ A comprehensive performance comparison between FastAPI (Python) and Axum (Rust) 
 - [Running the Benchmark](#running-the-benchmark)
 - [Understanding Results](#understanding-results)
 - [Benchmark Metrics Explained](#benchmark-metrics-explained)
+- [CRUD Operations Testing](#crud-operations-testing)
 - [Customization](#customization)
 - [Troubleshooting](#troubleshooting)
 
 ## 🎯 Overview
 
-This benchmark project compares two popular web frameworks:
+This benchmark project compares three modern web frameworks:
 
 - **FastAPI** (Python) - Modern, fast web framework with automatic API documentation
 - **Axum** (Rust) - Ergonomic and modular web framework built on Tokio
+- **Express TypeScript** (Node.js) - Popular JavaScript framework with TypeScript support
 
-Both implementations provide identical functionality:
-- ✅ JSON REST APIs
-- ✅ Database operations (SQLite)
+All implementations provide identical functionality:
+- ✅ JSON REST APIs with full CRUD operations
+- ✅ Database operations (SQLite with CREATE, READ, UPDATE, DELETE)
 - ✅ Echo endpoints for latency testing
 - ✅ CPU and memory stress tests
-- ✅ Health checks
+- ✅ Health checks and monitoring
+- ✅ Automatic database cleanup after testing
 
 ## ⚡ Quick Start
 
 ```bash
-# 1. Setup Python API (using pipenv)
+# 1. Setup Python FastAPI (using pipenv)
 cd api/python
 pipenv shell
 pipenv install
 fastapi dev server.py            # Port 8000
 
-# 2. Setup Rust API (new terminal)
+# 2. Setup Rust Axum (new terminal)
 cd api/rust  
 cargo build
 cargo run                        # Port 3000
 
-# 3. Run comparison benchmark (new terminal)
+# 3. Setup Node.js TypeScript (new terminal)
+cd api/typescript-node
+npm install
+npm run dev                      # Port 4000
+
+# 4. Run comprehensive CRUD benchmark (new terminal)
 cd api/benchmark
 pipenv shell
 pipenv install
-python benchmark.py
+python enhanced_crud_benchmark.py
 ```
 
 ## 📁 Project Structure
@@ -58,20 +66,29 @@ benchmark-project/
 │   │   ├── Pipfile             # Python dependencies for benchmarking
 │   │   ├── Pipfile.lock
 │   │   ├── benchmark.py        # Individual server benchmark
-│   │   ├── comparison_results.json
-│   │   ├── performance_comparison.png
-│   │   └── models.py
+│   │   ├── enhanced_crud_benchmark.py  # Comprehensive CRUD benchmark
+│   │   ├── comprehensive_crud_results.json
+│   │   └── crud_performance_comparison.png
 │   ├── python/                 # FastAPI implementation
 │   │   ├── Pipfile            # Python dependencies
 │   │   ├── Pipfile.lock
 │   │   ├── benchmark.db       # SQLite database
 │   │   └── server.py          # FastAPI server
-│   └── rust/                  # Rust Axum implementation
+│   ├── rust/                  # Rust Axum implementation
+│   │   ├── src/
+│   │   │   └── main.rs        # Rust Axum server
+│   │   ├── Cargo.toml         # Rust dependencies
+│   │   ├── Cargo.lock
+│   │   └── benchmark.db       # SQLite database
+│   └── typescript-node/       # Node.js TypeScript implementation
 │       ├── src/
-│       │   └── main.rs        # Rust Axum server
-│       ├── Cargo.toml         # Rust dependencies
-│       ├── Cargo.lock
+│       │   └── server.ts      # TypeScript server
+│       ├── package.json       # Node.js dependencies
+│       ├── tsconfig.json      # TypeScript configuration
+│       ├── node_modules/      # Dependencies
+│       ├── dist/             # Compiled JavaScript
 │       └── benchmark.db       # SQLite database
+├── .gitignore
 └── README.md
 ```
 
@@ -80,6 +97,7 @@ benchmark-project/
 ### Prerequisites
 - Python 3.8+ with pipenv
 - Rust 1.70+ with Cargo
+- Node.js 16+ with npm
 
 ### FastAPI Setup (Python)
 
@@ -126,6 +144,20 @@ cargo build
 
 # For production-like performance testing, use:
 # cargo build --release
+```
+
+### Node.js TypeScript Setup
+
+```bash
+cd api/typescript-node
+
+# Install dependencies
+npm install
+
+# If package.json doesn't exist, initialize:
+# npm init -y
+# npm install express sqlite3 sqlite cors
+# npm install -D @types/express @types/node @types/cors typescript ts-node
 ```
 
 ### Benchmark Tools Setup
@@ -196,7 +228,20 @@ You should see:
 🚀 Server running on http://0.0.0.0:3000
 ```
 
-### Step 3: Run Individual Benchmarks (Optional, New Terminal)
+### Step 3: Start Node.js TypeScript Server (New Terminal)
+
+```bash
+cd api/typescript-node
+npm install            # Install dependencies
+npm run dev            # Start development server
+```
+
+You should see:
+```
+🚀 Node.js TypeScript server running on http://0.0.0.0:4000
+```
+
+### Step 4: Run Individual Benchmarks (Optional, New Terminal)
 
 Test each server individually:
 
@@ -210,29 +255,67 @@ python benchmark.py --url http://localhost:8000 --requests 1000
 
 # Test Rust only  
 python benchmark.py --url http://localhost:3000 --requests 1000
+
+# Test Node.js only
+python benchmark.py --url http://localhost:4000 --requests 1000
 ```
 
-### Step 4: Run Comparative Benchmark
+### Step 5: Run Comprehensive CRUD Benchmark
 
 ```bash
 cd api/benchmark
 pipenv shell          # If not already in pipenv shell
-python benchmark.py --fastapi-url http://localhost:8000 --rust-url http://localhost:3000
+python enhanced_crud_benchmark.py
 ```
 
 **Available options:**
 ```bash
 # Custom request count and concurrency
-python benchmark.py --requests 2000 --concurrent 100
+python enhanced_crud_benchmark.py --requests 2000 --concurrent 100
 
 # Save results to custom file
-python benchmark.py --output my_results.json --chart my_chart.png
+python enhanced_crud_benchmark.py --output my_results.json --chart my_chart.png
 
-# Test different ports
-python benchmark.py --fastapi-url http://localhost:8001 --rust-url http://localhost:3001
+# Test specific servers only
+python enhanced_crud_benchmark.py --fastapi-url http://localhost:8000 --nodejs-url http://localhost:4000
 ```
 
 ## 📊 Understanding Results
+
+### CRUD Operations Testing
+
+The enhanced benchmark now tests **complete CRUD operations** across all frameworks:
+
+#### 🔧 **Phase 1: Basic Endpoints**
+- `GET /` - Root endpoint (JSON response)
+- `GET /health` - Health check with database status
+- `POST /echo` - Echo POST with JSON data and timing
+- `GET /echo/test` - Simple GET echo endpoint
+
+#### 📖 **Phase 2: Database READ Operations**
+- `GET /db/items` - **SELECT all** items from database
+- `GET /db/items/1` - **SELECT single** item with WHERE clause
+
+#### 📝 **Phase 3: Database CREATE Operations**
+- `POST /db/items` - **INSERT** new records (500 requests)
+- Tests database write performance and connection handling
+
+#### ✏️ **Phase 4: Database UPDATE Operations**
+- `PUT /db/items/1` - **UPDATE** existing records (250 requests)
+- Tests modification performance and transaction handling
+
+#### 🗑️ **Phase 5: Database DELETE Operations**
+- `DELETE /db/items/2` - **DELETE** records (100 requests)
+- Tests removal performance and referential integrity
+
+#### 💪 **Phase 6: Stress Tests**
+- `GET /stress/cpu/1000` - CPU-intensive calculations
+- `GET /stress/memory/1` - Memory allocation and cleanup
+
+#### 🧹 **Phase 7: Automatic Cleanup**
+- Removes all benchmark-created items (ID > 3)
+- Preserves original sample data for consistency
+- Ensures reproducible benchmark results
 
 ### Benchmark Metrics Explained
 
@@ -253,8 +336,8 @@ Each endpoint is tested with detailed performance metrics. Here's what each metr
 
 | Metric | Formula | Interpretation |
 |--------|---------|----------------|
-| **Performance Ratio** | `Rust RPS ÷ FastAPI RPS` | > 1.0 = Rust is faster<br>< 1.0 = FastAPI is faster |
-| **Latency Ratio** | `FastAPI Avg(ms) ÷ Rust Avg(ms)` | > 1.0 = Rust has lower latency<br>< 1.0 = FastAPI has lower latency |
+| **Performance Ratio** | `Winner RPS ÷ Other RPS` | > 1.0 = Performance advantage |
+| **Category Winner** | `Highest RPS in operation type` | Framework that excels in specific operations |
 
 #### 🎯 **What These Numbers Mean in Practice**
 
@@ -329,43 +412,117 @@ User 2: [Req1|Req2|Req3|Req4|Req5]
 User50: [Req1|Req2|Req3|Req4|Req5]
 ```
 
-### Endpoints Tested
-
-| Endpoint | Type | Purpose | What It Stresses |
-|----------|------|---------|------------------|
-| `GET /` | Basic | Simple JSON response | Basic HTTP handling, JSON serialization |
-| `GET /health` | Basic | Health check with DB status | Database connectivity, status queries |
-| `POST /echo` | Latency | Echo JSON data with timing | JSON parsing, request/response cycle |
-| `GET /echo/test` | Latency | Simple GET echo | Minimal processing overhead |
-| `GET /db/items` | I/O | Database read operations | Database queries, connection pooling |
-| `POST /db/items` | I/O | Database write operations | Insert operations, transaction handling |
-| `GET /stress/cpu/1000` | CPU | CPU-intensive calculations | Pure computational performance |
-| `GET /stress/memory/1` | Memory | Memory allocation test | Memory management, garbage collection |
-
 ### Sample Output Explained
 
 ```
-🚀 Starting Comparative Benchmark: FastAPI vs Rust Axum
+🚀 Starting Comprehensive CRUD Benchmark: FastAPI vs Rust Axum vs Node.js TypeScript
 
 ✅ FastAPI server is running at http://localhost:8000
 ✅ Rust Axum server is running at http://localhost:3000
+✅ Node.js TypeScript server is running at http://localhost:4000
 
-🏆 PERFORMANCE COMPARISON SUMMARY
-================================================================
-Endpoint             FastAPI RPS  Rust RPS     Rust Advantage  Latency Advantage
--------------------------------------------------------------------------------------
-/                    2,847.3      8,924.1      3.1x faster     2.8x lower latency
-/health              2,156.8      7,832.4      3.6x faster     3.2x lower latency
-/echo                1,923.7      6,547.9      3.4x faster     3.1x lower latency
-/db/items            1,234.5      3,891.2      3.2x faster     2.9x lower latency
+🏅 Category Winners:
+   Basic Operations: Rust
+   Database READ: Rust  
+   Database WRITE: Node.js
+   Stress Tests: Rust
 
-📊 OVERALL PERFORMANCE SUMMARY
-================================================================
-🐍 FastAPI Average RPS: 2,040.6
-🦀 Rust Axum Average RPS: 6,798.9  
-🚀 Rust Performance Advantage: 3.3x faster
-⚡ Rust Latency Advantage: 3.0x lower latency
-🏁 Rust wins in 6/6 endpoints
+🏆 Overall CRUD Champion: Rust
+   (Won 3/4 categories)
+
+💡 Performance Insights:
+🦀 Rust Axum dominates with:
+   • Superior memory management and zero-cost abstractions
+   • Excellent async performance with Tokio runtime
+   • Efficient database operations with SQLx
+
+🧹 CLEANUP: Resetting databases to initial state...
+🗑️ FastAPI: Deleting 387 benchmark items...
+🗑️ Rust: Deleting 402 benchmark items...
+🗑️ Node.js: Deleting 395 benchmark items...
+✅ Database cleanup completed
+```
+
+#### 🔍 **Breaking Down This Example:**
+
+**Category Performance:**
+- **Basic Operations**: Simple JSON responses favor Rust's zero-cost abstractions
+- **Database READ**: Rust's SQLx + Tokio combination excels at I/O operations
+- **Database WRITE**: Node.js V8 engine shows strength in transaction handling
+- **Stress Tests**: Rust's memory management dominates CPU/memory intensive tasks
+
+**Database Cleanup:**
+- **Automatic cleanup** ensures consistent benchmark conditions
+- **Preserves sample data** (original 3 items remain)
+- **Removes benchmark artifacts** for clean subsequent runs
+
+### Performance Categories
+
+| Ratio | Category | Description | Real-World Impact |
+|-------|----------|-------------|-------------------|
+| `> 2.0x` | 🔥 **SIGNIFICANT** | Major performance difference | Can handle 2x+ more users with same hardware |
+| `1.5-2.0x` | ✨ **NOTABLE** | Clear performance advantage | Noticeable improvement in response times |
+| `1.1-1.5x` | 📈 **MODERATE** | Noticeable improvement | Marginal but measurable benefits |
+| `< 1.1x` | 🤝 **COMPARABLE** | Similar performance | Negligible difference for most use cases |
+
+#### 🎮 **Interactive Interpretation Guide**
+
+**If you see RPS of 5,000+:**
+- ✅ Excellent for high-traffic APIs
+- ✅ Can handle viral content or traffic spikes
+- ✅ Suitable for microservices architecture
+
+**If you see RPS of 1,000-5,000:**
+- ✅ Good for most web applications
+- ✅ Suitable for business applications
+- ⚠️ May need scaling for high-traffic scenarios
+
+**If you see RPS < 1,000:**
+- ⚠️ Acceptable for internal tools
+- ⚠️ May need optimization for public APIs
+- 🔴 Not suitable for high-traffic applications
+
+**If you see latency > 100ms:**
+- 🔴 Users will notice delays
+- 🔴 Mobile users will be especially affected
+- 🔴 Consider caching or optimization
+
+**If you see P95 > 2x average:**
+- ⚠️ Inconsistent performance
+- ⚠️ Some users experience much slower responses
+- ⚠️ May indicate resource contention or GC issues
+
+### CRUD-Specific Performance Insights
+
+**Database READ Operations:**
+- **SELECT queries** are typically the fastest database operations
+- **Connection pooling** efficiency becomes crucial under load
+- **JSON serialization** speed affects overall response time
+
+**Database WRITE Operations:**
+- **INSERT/UPDATE/DELETE** are slower due to transaction overhead
+- **Foreign key constraints** and **indexes** impact performance
+- **Connection management** is critical for write-heavy workloads
+
+**Framework Strengths by Operation:**
+
+🦀 **Rust Axum typically excels at:**
+- Basic HTTP handling (zero-cost abstractions)
+- Memory-intensive operations
+- CPU-bound computations
+- High-concurrency scenarios
+
+🐍 **FastAPI typically excels at:**
+- Complex business logic (Python ecosystem)
+- Rapid development and iteration
+- Scientific computing integration
+- Data processing pipelines
+
+🟢 **Node.js TypeScript typically excels at:**
+- I/O-heavy operations (event loop)
+- JSON processing (V8 optimization)
+- Real-time applications
+- Microservices architecture
 
 🔥 Rust shows SIGNIFICANT performance advantage
 🚄 Rust has SIGNIFICANTLY lower latency
