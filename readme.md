@@ -746,16 +746,26 @@ If you encounter issues:
 **Rust Axum Advantages:**
 - 🚀 **2-4x higher throughput** (RPS)
 - ⚡ **2-5x lower latency** (response time)
-- 📈 **Better CPU efficiency**
-- 🔥 **Superior performance under high load**
-- 💾 **Lower memory usage**
+- 📈 **Superior CPU efficiency**
+- 🔥 **Excellent performance under high load**
+- 💾 **Lowest memory usage**
+- 🎯 **Consistent performance** (no garbage collection pauses)
+
+**Node.js TypeScript Advantages:**
+- 🟢 **Strong I/O performance** (event loop efficiency)
+- ⚡ **Fast JSON processing** (V8 engine optimization)
+- 📊 **Good async/await performance**
+- 🚀 **Competitive throughput** (often 2nd place)
+- 🔄 **Efficient connection handling**
+- 💡 **Moderate memory usage**
 
 **FastAPI Advantages:**
-- 🐍 **Faster development time**
+- 🐍 **Fastest development time**
 - 📚 **Rich ecosystem** (more libraries)
 - 🛠️ **Better debugging tools**
-- 👥 **Larger community**
+- 👥 **Largest community**
 - 📖 **Automatic API documentation**
+- 🧠 **Great for data science integration**
 
 ### When to Choose Each
 
@@ -764,13 +774,24 @@ If you encounter issues:
 - High concurrent load expected
 - Long-running services
 - Resource efficiency matters
-- Type safety is important
+- Type safety is paramount
+- Microservices with tight SLAs
+
+**Choose Node.js TypeScript when:**
+- I/O-heavy applications
+- Real-time features needed
+- JavaScript ecosystem familiarity
+- Rapid iteration required
+- JSON-heavy APIs
+- Microservices architecture
+- Good balance of performance and productivity
 
 **Choose FastAPI when:**
 - Rapid prototyping needed
 - Complex business logic
 - Extensive Python ecosystem required
 - Team expertise in Python
+- Data science/ML integration
 - Quick API documentation needed
 
 ## 📈 Output Files
