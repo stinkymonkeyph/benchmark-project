@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 import cors from 'cors';
-import { promisify } from 'util';
 
 // Types
 interface Item {
@@ -60,6 +59,19 @@ async function initDatabase(): Promise<void> {
     driver: sqlite3.Database
   });
 
+  // SQLite performance optimizations - WITHOUT WAL mode to avoid transaction conflicts
+  await db.exec(`
+    PRAGMA journal_mode = DELETE;
+    PRAGMA synchronous = NORMAL;
+    PRAGMA cache_size = 64000;
+    PRAGMA temp_store = memory;
+    PRAGMA mmap_size = 268435456;
+    PRAGMA foreign_keys = OFF;
+    PRAGMA auto_vacuum = NONE;
+    PRAGMA page_size = 4096;
+    PRAGMA journal_mode = WAL;
+  `);
+
   // Create table
   await db.exec(`
     CREATE TABLE IF NOT EXISTS items (
@@ -70,6 +82,16 @@ async function initDatabase(): Promise<void> {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Create indexes for better query performance
+  await db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_items_created_at ON items(created_at);
+    CREATE INDEX IF NOT EXISTS idx_items_name ON items(name);
+    CREATE INDEX IF NOT EXISTS idx_items_price ON items(price);
+  `);
+
+  // Optimize SQLite query planner
+  await db.exec('PRAGMA optimize');
 
   // Insert sample data if table is empty
   const count = await db.get('SELECT COUNT(*) as count FROM items');
@@ -131,8 +153,11 @@ const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(addProcessTimeHeader);
+
+// Disable X-Powered-By header for security
+app.disable('x-powered-by');
 
 // Basic endpoints
 app.get('/', (req: Request, res: Response) => {
@@ -210,12 +235,15 @@ app.get('/echo/:message', async (req: Request, res: Response) => {
   });
 });
 
-// Database CRUD operations
+// Database CRUD operations - FIXED (NO MANUAL TRANSACTIONS)
+
 app.get('/db/items', async (req: Request, res: Response) => {
   try {
+    // Optimized query with simpler ORDER BY for better performance
     const rows = await db.all(`
       SELECT id, name, description, price, created_at 
-      FROM items
+      FROM items 
+      ORDER BY id
     `);
 
     const items: ItemResponse[] = rows.map(row => ({
@@ -228,6 +256,7 @@ app.get('/db/items', async (req: Request, res: Response) => {
 
     res.json(items);
   } catch (error) {
+    console.error('Database error in /db/items:', error);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -235,6 +264,12 @@ app.get('/db/items', async (req: Request, res: Response) => {
 app.get('/db/items/:itemId', async (req: Request, res: Response): Promise<void> => {
   try {
     const itemId = parseInt(req.params.itemId);
+
+    if (isNaN(itemId)) {
+      res.status(400).json({ error: 'Invalid item ID' });
+      return;
+    }
+
     const row = await db.get(`
       SELECT id, name, description, price, created_at 
       FROM items WHERE id = ?
@@ -255,6 +290,7 @@ app.get('/db/items/:itemId', async (req: Request, res: Response): Promise<void> 
 
     res.json(item);
   } catch (error) {
+    console.error('Database error in /db/items/:itemId:', error);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -263,26 +299,42 @@ app.post('/db/items', async (req: Request, res: Response) => {
   try {
     const item: Item = req.body;
 
+    // Input validation
+    if (!item.name || typeof item.name !== 'string' || item.name.trim() === '') {
+      res.status(400).json({ error: 'Name is required and must be a non-empty string' });
+      return;
+    }
+
+    if (typeof item.price !== 'number' || item.price < 0) {
+      res.status(400).json({ error: 'Price must be a non-negative number' });
+      return;
+    }
+
+    // Insert the item (SQLite handles this atomically - NO MANUAL TRANSACTIONS)
     const result = await db.run(`
       INSERT INTO items (name, description, price) 
       VALUES (?, ?, ?)
-    `, [item.name, item.description, item.price]);
+    `, [item.name.trim(), item.description, item.price]);
 
+    const item_id = result.lastID;
+
+    // Get the created item
     const newItem = await db.get(`
       SELECT id, name, description, price, created_at 
       FROM items WHERE id = ?
-    `, [result.lastID]);
+    `, [item_id]);
 
     const response: ItemResponse = {
       id: newItem.id,
       name: newItem.name,
       description: newItem.description,
       price: newItem.price,
-      created_at: newItem.created_at
+      created_at: newItem.created_at,
     };
 
     res.status(201).json(response);
   } catch (error) {
+    console.error('Database error in POST /db/items:', error);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -292,19 +344,35 @@ app.put('/db/items/:itemId', async (req: Request, res: Response): Promise<void> 
     const itemId = parseInt(req.params.itemId);
     const item: Item = req.body;
 
-    // Check if item exists
+    if (isNaN(itemId)) {
+      res.status(400).json({ error: 'Invalid item ID' });
+      return;
+    }
+
+    // Input validation
+    if (!item.name || typeof item.name !== 'string' || item.name.trim() === '') {
+      res.status(400).json({ error: 'Name is required and must be a non-empty string' });
+      return;
+    }
+
+    if (typeof item.price !== 'number' || item.price < 0) {
+      res.status(400).json({ error: 'Price must be a non-negative number' });
+      return;
+    }
+
+    // Check if item exists first
     const existing = await db.get('SELECT id FROM items WHERE id = ?', [itemId]);
     if (!existing) {
       res.status(404).json({ error: 'Item not found' });
       return;
     }
 
-    // Update the item
+    // Update the item (SQLite handles this atomically - NO MANUAL TRANSACTIONS)
     await db.run(`
       UPDATE items 
       SET name = ?, description = ?, price = ? 
       WHERE id = ?
-    `, [item.name, item.description, item.price, itemId]);
+    `, [item.name.trim(), item.description, item.price, itemId]);
 
     // Get the updated item
     const updatedItem = await db.get(`
@@ -317,11 +385,12 @@ app.put('/db/items/:itemId', async (req: Request, res: Response): Promise<void> 
       name: updatedItem.name,
       description: updatedItem.description,
       price: updatedItem.price,
-      created_at: updatedItem.created_at
+      created_at: updatedItem.created_at,
     };
 
     res.json(response);
   } catch (error) {
+    console.error('Database error in PUT /db/items/:itemId:', error);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -330,20 +399,26 @@ app.delete('/db/items/:itemId', async (req: Request, res: Response): Promise<voi
   try {
     const itemId = parseInt(req.params.itemId);
 
-    // Check if item exists
+    if (isNaN(itemId)) {
+      res.status(400).json({ error: 'Invalid item ID' });
+      return;
+    }
+
+    // Check if item exists first
     const existing = await db.get('SELECT id FROM items WHERE id = ?', [itemId]);
     if (!existing) {
       res.status(404).json({ error: 'Item not found' });
       return;
     }
 
-    // Delete the item
+    // Delete the item (SQLite handles this atomically - NO MANUAL TRANSACTIONS)
     await db.run('DELETE FROM items WHERE id = ?', [itemId]);
 
     res.json({
       message: `Item ${itemId} deleted successfully`
     });
   } catch (error) {
+    console.error('Database error in DELETE /db/items/:itemId:', error);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -352,6 +427,11 @@ app.delete('/db/items/:itemId', async (req: Request, res: Response): Promise<voi
 app.get('/stress/cpu/:iterations', (req: Request, res: Response) => {
   const startTime = process.hrtime.bigint();
   const iterations = parseInt(req.params.iterations);
+
+  if (isNaN(iterations) || iterations < 0) {
+    res.status(400).json({ error: 'Invalid iterations parameter' });
+    return;
+  }
 
   // CPU intensive task
   let result = 0;
@@ -375,6 +455,11 @@ app.get('/stress/cpu/:iterations', (req: Request, res: Response) => {
 app.get('/stress/memory/:sizeMb', (req: Request, res: Response): void => {
   const startTime = process.hrtime.bigint();
   const sizeMb = parseInt(req.params.sizeMb);
+
+  if (isNaN(sizeMb) || sizeMb < 0) {
+    res.status(400).json({ error: 'Invalid size parameter' });
+    return;
+  }
 
   if (sizeMb > 100) {
     res.status(400).json({ error: 'Size too large, max 100MB' });
@@ -404,7 +489,7 @@ app.get('/stress/memory/:sizeMb', (req: Request, res: Response): void => {
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
+  console.error('Unhandled error:', err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
@@ -419,9 +504,14 @@ async function startServer() {
     await initDatabase();
     console.log('Database initialized successfully');
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`🚀 Node.js TypeScript server running on http://0.0.0.0:${PORT}`);
     });
+
+    // Set keep-alive timeout for better performance under load
+    server.keepAliveTimeout = 65000;
+    server.headersTimeout = 66000;
+
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
@@ -429,20 +519,33 @@ async function startServer() {
 }
 
 // Graceful shutdown
-process.on('SIGINT', async () => {
-  console.log('\nShutting down gracefully...');
-  if (db) {
-    await db.close();
+const gracefulShutdown = async (signal: string) => {
+  console.log(`\n${signal} received. Shutting down gracefully...`);
+
+  try {
+    if (db) {
+      await db.close();
+      console.log('Database connection closed.');
+    }
+  } catch (error) {
+    console.error('Error during graceful shutdown:', error);
   }
+
   process.exit(0);
+};
+
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+
+// Handle uncaught exceptions and rejections
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  process.exit(1);
 });
 
-process.on('SIGTERM', async () => {
-  console.log('\nShutting down gracefully...');
-  if (db) {
-    await db.close();
-  }
-  process.exit(0);
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
 });
 
 startServer();

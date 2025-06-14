@@ -38,17 +38,17 @@ All implementations provide identical functionality:
 cd api/python
 pipenv shell
 pipenv install
-fastapi dev server.py            # Port 8000
+uvicorn server:app --host 0.0.0.0 --port 8000  # Port 8000
 
 # 2. Setup Rust Axum (new terminal)
 cd api/rust  
-cargo build
-cargo run                        # Port 3000
+cargo build --release
+cargo run --release                              # Port 3000
 
 # 3. Setup Node.js TypeScript (new terminal)
 cd api/typescript-node
 npm install
-npm run dev                      # Port 4000
+npm run dev                                      # Port 4000
 
 # 4. Run comprehensive CRUD benchmark (new terminal)
 cd api/benchmark
@@ -111,7 +111,7 @@ pipenv shell
 pipenv install
 
 # If Pipfile doesn't exist, create dependencies:
-# pipenv install fastapi uvicorn sqlalchemy aiofiles pydantic
+# pipenv install fastapi uvicorn[standard] sqlalchemy aiofiles pydantic
 ```
 
 **Create Pipfile in `api/python/`:**
@@ -140,10 +140,9 @@ python_version = "3.8"
 cd api/rust
 
 # Build dependencies
-cargo build
+cargo build --release
 
-# For production-like performance testing, use:
-# cargo build --release
+# For maximum performance testing, always use release mode
 ```
 
 ### Node.js TypeScript Setup
@@ -201,7 +200,15 @@ python_version = "3.8"
 cd api/python
 pipenv shell           # Activate virtual environment
 pipenv install         # Install dependencies
-fastapi dev server.py  # Start development server
+
+# Start server using uvicorn directly
+uvicorn server:app --host 0.0.0.0 --port 8000
+
+# For production-like performance, use:
+uvicorn server:app --host 0.0.0.0 --port 8000 --workers 1 --loop uvloop
+
+# Alternative: if you have the optimized version with startup code
+python server.py
 ```
 
 You should see:
@@ -213,12 +220,8 @@ You should see:
 
 ```bash
 cd api/rust
-cargo build            # Build dependencies
-cargo run              # Start server
-```
 
-For maximum performance testing, use:
-```bash
+# For maximum performance testing, always use release mode
 cargo build --release
 cargo run --release
 ```
@@ -360,58 +363,6 @@ Each endpoint is tested with detailed performance metrics. Here's what each metr
 - Only 5% of users experience slower responses
 - Much more important than average for real-world performance
 
-#### 🧮 **How Benchmarks Are Calculated**
-
-**1. Request Generation:**
-```python
-# Pseudo-code for benchmark process
-concurrent_requests = 50
-total_requests = 1000
-semaphore = Semaphore(concurrent_requests)
-
-start_time = time.now()
-for i in range(total_requests):
-    async with semaphore:  # Limit concurrency
-        request_start = time.now()
-        response = await make_request()
-        request_time = time.now() - request_start
-        record_metrics(request_time, response.status)
-total_time = time.now() - start_time
-```
-
-**2. Statistical Calculations:**
-```python
-# Response time statistics
-response_times = [0.012, 0.015, 0.018, ...]  # in seconds
-avg_response_time = sum(response_times) / len(response_times)
-min_response_time = min(response_times)
-max_response_time = max(response_times)
-
-# Sort for percentile calculations
-sorted_times = sorted(response_times)
-p95_index = int(len(sorted_times) * 0.95)
-p95_response_time = sorted_times[p95_index]
-
-# Throughput calculation
-rps = total_requests / total_time_seconds
-```
-
-#### 🎭 **Load Testing Patterns**
-
-**Concurrency Model:**
-- **50 concurrent requests** = 50 virtual users hitting the server simultaneously
-- **1000 total requests** = Each virtual user makes ~20 requests
-- **Semaphore limiting** = Prevents overwhelming the server unfairly
-
-**Request Distribution:**
-```
-Time →  [====|====|====|====|====]
-User 1: [Req1|Req2|Req3|Req4|Req5]
-User 2: [Req1|Req2|Req3|Req4|Req5]
-...
-User50: [Req1|Req2|Req3|Req4|Req5]
-```
-
 ### Sample Output Explained
 
 ```
@@ -443,19 +394,6 @@ User50: [Req1|Req2|Req3|Req4|Req5]
 ✅ Database cleanup completed
 ```
 
-#### 🔍 **Breaking Down This Example:**
-
-**Category Performance:**
-- **Basic Operations**: Simple JSON responses favor Rust's zero-cost abstractions
-- **Database READ**: Rust's SQLx + Tokio combination excels at I/O operations
-- **Database WRITE**: Node.js V8 engine shows strength in transaction handling
-- **Stress Tests**: Rust's memory management dominates CPU/memory intensive tasks
-
-**Database Cleanup:**
-- **Automatic cleanup** ensures consistent benchmark conditions
-- **Preserves sample data** (original 3 items remain)
-- **Removes benchmark artifacts** for clean subsequent runs
-
 ### Performance Categories
 
 | Ratio | Category | Description | Real-World Impact |
@@ -464,33 +402,6 @@ User50: [Req1|Req2|Req3|Req4|Req5]
 | `1.5-2.0x` | ✨ **NOTABLE** | Clear performance advantage | Noticeable improvement in response times |
 | `1.1-1.5x` | 📈 **MODERATE** | Noticeable improvement | Marginal but measurable benefits |
 | `< 1.1x` | 🤝 **COMPARABLE** | Similar performance | Negligible difference for most use cases |
-
-#### 🎮 **Interactive Interpretation Guide**
-
-**If you see RPS of 5,000+:**
-- ✅ Excellent for high-traffic APIs
-- ✅ Can handle viral content or traffic spikes
-- ✅ Suitable for microservices architecture
-
-**If you see RPS of 1,000-5,000:**
-- ✅ Good for most web applications
-- ✅ Suitable for business applications
-- ⚠️ May need scaling for high-traffic scenarios
-
-**If you see RPS < 1,000:**
-- ⚠️ Acceptable for internal tools
-- ⚠️ May need optimization for public APIs
-- 🔴 Not suitable for high-traffic applications
-
-**If you see latency > 100ms:**
-- 🔴 Users will notice delays
-- 🔴 Mobile users will be especially affected
-- 🔴 Consider caching or optimization
-
-**If you see P95 > 2x average:**
-- ⚠️ Inconsistent performance
-- ⚠️ Some users experience much slower responses
-- ⚠️ May indicate resource contention or GC issues
 
 ### CRUD-Specific Performance Insights
 
@@ -523,62 +434,6 @@ User50: [Req1|Req2|Req3|Req4|Req5]
 - JSON processing (V8 optimization)
 - Real-time applications
 - Microservices architecture
-
-🔥 Rust shows SIGNIFICANT performance advantage
-🚄 Rust has SIGNIFICANTLY lower latency
-```
-
-#### 🔍 **Breaking Down This Example:**
-
-**Root Endpoint (`/`):**
-- **FastAPI**: 2,847 requests/second, ~0.35ms average response
-- **Rust**: 8,924 requests/second, ~0.11ms average response
-- **Analysis**: Rust processes 3.1x more requests and responds 2.8x faster
-
-**Database Endpoint (`/db/items`):**
-- **FastAPI**: 1,234 requests/second (lower due to I/O)
-- **Rust**: 3,891 requests/second (still maintains high performance)
-- **Analysis**: Database operations are bottlenecks, but Rust handles them more efficiently
-
-**Overall Performance:**
-- **3.3x faster** = If FastAPI handles 100 users, Rust handles 330 users
-- **3.0x lower latency** = If FastAPI takes 30ms, Rust takes 10ms
-
-### Performance Categories
-
-| Ratio | Category | Description | Real-World Impact |
-|-------|----------|-------------|-------------------|
-| `> 2.0x` | 🔥 **SIGNIFICANT** | Major performance difference | Can handle 2x+ more users with same hardware |
-| `1.5-2.0x` | ✨ **NOTABLE** | Clear performance advantage | Noticeable improvement in response times |
-| `1.1-1.5x` | 📈 **MODERATE** | Noticeable improvement | Marginal but measurable benefits |
-| `< 1.1x` | 🤝 **COMPARABLE** | Similar performance | Negligible difference for most use cases |
-
-#### 🎮 **Interactive Interpretation Guide**
-
-**If you see RPS of 5,000+:**
-- ✅ Excellent for high-traffic APIs
-- ✅ Can handle viral content or traffic spikes
-- ✅ Suitable for microservices architecture
-
-**If you see RPS of 1,000-5,000:**
-- ✅ Good for most web applications
-- ✅ Suitable for business applications
-- ⚠️ May need scaling for high-traffic scenarios
-
-**If you see RPS < 1,000:**
-- ⚠️ Acceptable for internal tools
-- ⚠️ May need optimization for public APIs
-- 🔴 Not suitable for high-traffic applications
-
-**If you see latency > 100ms:**
-- 🔴 Users will notice delays
-- 🔴 Mobile users will be especially affected
-- 🔴 Consider caching or optimization
-
-**If you see P95 > 2x average:**
-- ⚠️ Inconsistent performance
-- ⚠️ Some users experience much slower responses
-- ⚠️ May indicate resource contention or GC issues
 
 ## 🎛️ Customization
 
@@ -629,6 +484,11 @@ cd api/rust
 cargo build --release
 cargo run --release
 
+# Use optimized Python server
+cd api/python
+pipenv shell
+uvicorn server:app --host 0.0.0.0 --port 8000 --workers 1 --loop uvloop
+
 # Disable debug logging
 export RUST_LOG=warn
 
@@ -662,7 +522,25 @@ kill $(lsof -t -i:3000)  # Rust
 python benchmark.py --fastapi-url http://localhost:8001
 ```
 
-**3. Pipenv issues**
+**3. FastAPI startup issues**
+```bash
+# Check if server.py contains the app variable
+python -c "from server import app; print('App found successfully')"
+
+# If using different filename, adjust the uvicorn command:
+uvicorn your_filename:app --host 0.0.0.0 --port 8000
+
+# If app variable has different name:
+uvicorn server:your_app_name --host 0.0.0.0 --port 8000
+
+# Test without uvloop if it causes issues:
+uvicorn server:app --host 0.0.0.0 --port 8000
+
+# Alternative: run with Python directly if server.py has startup code
+python server.py
+```
+
+**4. Pipenv issues**
 ```bash
 # Reset pipenv environment
 pipenv --rm
@@ -670,13 +548,14 @@ pipenv shell
 pipenv install
 
 # If pipenv shell doesn't work, use:
+pipenv run uvicorn server:app --host 0.0.0.0 --port 8000
 pipenv run python benchmark.py
 
 # Use system Python if needed
 python -m pip install fastapi uvicorn aiohttp matplotlib
 ```
 
-**4. Database errors**
+**5. Database errors**
 ```bash
 # Reset databases
 rm api/python/benchmark.db
@@ -686,29 +565,41 @@ rm api/rust/benchmark.db
 chmod 666 benchmark.db
 ```
 
-**5. Rust compilation errors**
+**6. Rust compilation errors**
 ```bash
 # Update Rust
 rustup update
 
 # Clean build
 cargo clean
-cargo build
-
-# For production performance
 cargo build --release
+
+# For production performance, always use release mode
+cargo run --release
 ```
 
-**6. Import/dependency errors**
+**7. Import/dependency errors**
 ```bash
 # Install missing packages
 cd api/benchmark
 pipenv shell
-pipenv install matplotlib numpy
+pipenv install matplotlib numpy aiohttp
 
 cd api/python  
 pipenv shell
-pipenv install fastapi uvicorn
+pipenv install fastapi uvicorn[standard] pydantic
+```
+
+**8. uvloop installation issues**
+```bash
+# If uvloop fails to install or run
+pip install uvloop
+
+# Or run without uvloop
+uvicorn server:app --host 0.0.0.0 --port 8000
+
+# On Windows, uvloop might not be available
+pip install uvicorn[standard]
 ```
 
 ### Performance Debugging
@@ -799,12 +690,13 @@ If you encounter issues:
 The benchmark generates several files:
 
 - **`comparison_results.json`** - Detailed JSON results for further analysis
-- **`performance_comparison.png`** - Visual charts comparing both frameworks
+- **`performance_comparison.png`** - Visual charts comparing all frameworks
 - **Console output** - Real-time results and summary
 
 ## 📚 Additional Resources
 
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [Uvicorn Documentation](https://www.uvicorn.org/)
 - [Axum Documentation](https://docs.rs/axum/)
 - [SQLx Documentation](https://docs.rs/sqlx/)
 - [Tokio Documentation](https://tokio.rs/)

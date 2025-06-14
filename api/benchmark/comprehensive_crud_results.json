@@ -1,93 +1,93 @@
 {
-  "timestamp": "2025-06-14T03:23:28.125651",
+  "timestamp": "2025-06-14T14:48:58.272939",
   "benchmark_type": "Comprehensive CRUD Benchmark",
   "fastapi_results": [
     {
       "endpoint": "/",
       "method": "GET",
-      "requests_per_second": 2407.0438519092404,
-      "avg_response_time_ms": 40.439595460891724,
-      "p95_response_time_ms": 59.752094745635986,
+      "requests_per_second": 4175.4310516465575,
+      "avg_response_time_ms": 11.540446758270264,
+      "p95_response_time_ms": 25.965511798858643,
       "success_rate": 1.0
     },
     {
       "endpoint": "/health",
       "method": "GET",
-      "requests_per_second": 2282.9275089699377,
-      "avg_response_time_ms": 42.6387175321579,
-      "p95_response_time_ms": 59.374892711639404,
+      "requests_per_second": 1110.917054625135,
+      "avg_response_time_ms": 44.24685502052307,
+      "p95_response_time_ms": 60.186123847961426,
       "success_rate": 1.0
     },
     {
       "endpoint": "/echo",
       "method": "POST",
-      "requests_per_second": 2547.5073560472647,
-      "avg_response_time_ms": 38.13127851486206,
-      "p95_response_time_ms": 54.17999029159546,
+      "requests_per_second": 4085.988530056726,
+      "avg_response_time_ms": 11.760493040084839,
+      "p95_response_time_ms": 23.617112636566162,
       "success_rate": 1.0
     },
     {
       "endpoint": "/echo/test",
       "method": "GET",
-      "requests_per_second": 3011.40359001642,
-      "avg_response_time_ms": 32.256834745407104,
-      "p95_response_time_ms": 47.782182693481445,
+      "requests_per_second": 5042.964288204839,
+      "avg_response_time_ms": 9.462547540664673,
+      "p95_response_time_ms": 20.992493629455566,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items",
       "method": "GET",
-      "requests_per_second": 8.958888578896218,
-      "avg_response_time_ms": 11068.903551578522,
-      "p95_response_time_ms": 13653.040266036987,
+      "requests_per_second": 922.7545019521862,
+      "avg_response_time_ms": 53.520814657211304,
+      "p95_response_time_ms": 68.8387393951416,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items/1",
       "method": "GET",
-      "requests_per_second": 1292.6830320681738,
-      "avg_response_time_ms": 76.17272448539734,
-      "p95_response_time_ms": 112.96522617340088,
+      "requests_per_second": 1004.8860660627565,
+      "avg_response_time_ms": 49.07564067840576,
+      "p95_response_time_ms": 63.80895376205445,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items",
       "method": "POST",
-      "requests_per_second": 551.5949855575177,
-      "avg_response_time_ms": 36.91169357299805,
-      "p95_response_time_ms": 197.81062602996826,
+      "requests_per_second": 1033.6261482054308,
+      "avg_response_time_ms": 20.396825313568115,
+      "p95_response_time_ms": 111.85216903686523,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items/1",
       "method": "PUT",
-      "requests_per_second": 794.7255572339037,
-      "avg_response_time_ms": 21.713671684265137,
-      "p95_response_time_ms": 96.87026739120483,
+      "requests_per_second": 929.2261883662401,
+      "avg_response_time_ms": 17.347834587097168,
+      "p95_response_time_ms": 96.52048349380493,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items/2",
       "method": "DELETE",
-      "requests_per_second": 1385.8687319922815,
-      "avg_response_time_ms": 6.907334327697754,
-      "p95_response_time_ms": 9.858536720275879,
-      "success_rate": 0.0
+      "requests_per_second": 1154.3712380380964,
+      "avg_response_time_ms": 8.357899188995361,
+      "p95_response_time_ms": 11.53874397277832,
+      "success_rate": 0.05
     },
     {
       "endpoint": "/stress/cpu/1000",
       "method": "GET",
-      "requests_per_second": 2079.4383048005566,
-      "avg_response_time_ms": 23.407607078552246,
-      "p95_response_time_ms": 35.65493822097778,
+      "requests_per_second": 3073.254512095758,
+      "avg_response_time_ms": 7.771179676055908,
+      "p95_response_time_ms": 14.147794246673584,
       "success_rate": 1.0
     },
     {
       "endpoint": "/stress/memory/1",
       "method": "GET",
-      "requests_per_second": 2249.328039161427,
-      "avg_response_time_ms": 21.59410071372986,
-      "p95_response_time_ms": 36.174750328063965,
+      "requests_per_second": 4331.813074228303,
+      "avg_response_time_ms": 5.53116512298584,
+      "p95_response_time_ms": 7.39741325378418,
       "success_rate": 1.0
     }
   ],
@@ -95,89 +95,89 @@
     {
       "endpoint": "/",
       "method": "GET",
-      "requests_per_second": 18468.40476075154,
-      "avg_response_time_ms": 4.074153542518616,
-      "p95_response_time_ms": 11.681056022644043,
+      "requests_per_second": 20276.14945445932,
+      "avg_response_time_ms": 1.9377610683441162,
+      "p95_response_time_ms": 6.135404109954834,
       "success_rate": 1.0
     },
     {
       "endpoint": "/health",
       "method": "GET",
-      "requests_per_second": 16380.160899789113,
-      "avg_response_time_ms": 4.846705079078674,
-      "p95_response_time_ms": 12.258529663085938,
+      "requests_per_second": 19027.741107194543,
+      "avg_response_time_ms": 2.0671019554138184,
+      "p95_response_time_ms": 7.588458061218262,
       "success_rate": 1.0
     },
     {
       "endpoint": "/echo",
       "method": "POST",
-      "requests_per_second": 15262.143058575237,
-      "avg_response_time_ms": 5.255893349647522,
-      "p95_response_time_ms": 15.89740514755249,
+      "requests_per_second": 15888.839221450273,
+      "avg_response_time_ms": 2.5795106887817383,
+      "p95_response_time_ms": 7.4361443519592285,
       "success_rate": 1.0
     },
     {
       "endpoint": "/echo/test",
       "method": "GET",
-      "requests_per_second": 15823.919776957002,
-      "avg_response_time_ms": 5.095510005950928,
-      "p95_response_time_ms": 15.805518627166746,
+      "requests_per_second": 13412.373408715172,
+      "avg_response_time_ms": 3.1460161209106445,
+      "p95_response_time_ms": 8.67307186126709,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items",
       "method": "GET",
-      "requests_per_second": 115.15274162127537,
-      "avg_response_time_ms": 847.1205171346664,
-      "p95_response_time_ms": 966.9788122177124,
+      "requests_per_second": 17421.678739948162,
+      "avg_response_time_ms": 2.2876839637756348,
+      "p95_response_time_ms": 12.017858028411865,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items/1",
       "method": "GET",
-      "requests_per_second": 17321.88536336567,
-      "avg_response_time_ms": 4.480503559112549,
-      "p95_response_time_ms": 14.27384614944458,
+      "requests_per_second": 18206.578027807078,
+      "avg_response_time_ms": 2.154413938522339,
+      "p95_response_time_ms": 6.69475793838501,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items",
       "method": "POST",
-      "requests_per_second": 1841.8511677825,
-      "avg_response_time_ms": 12.37665319442749,
-      "p95_response_time_ms": 16.211557388305664,
+      "requests_per_second": 5005.769226178968,
+      "avg_response_time_ms": 3.1212644577026367,
+      "p95_response_time_ms": 8.133852481842041,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items/1",
       "method": "PUT",
-      "requests_per_second": 13754.34178078598,
-      "avg_response_time_ms": 1.1734981536865234,
-      "p95_response_time_ms": 5.32766580581665,
-      "success_rate": 0.0
+      "requests_per_second": 5378.636792646395,
+      "avg_response_time_ms": 2.49619197845459,
+      "p95_response_time_ms": 5.902576446533203,
+      "success_rate": 1.0
     },
     {
       "endpoint": "/db/items/2",
       "method": "DELETE",
-      "requests_per_second": 11577.839732795981,
-      "avg_response_time_ms": 0.6779980659484863,
-      "p95_response_time_ms": 3.413069248199463,
-      "success_rate": 0.0
+      "requests_per_second": 14511.65622945715,
+      "avg_response_time_ms": 0.5706357955932617,
+      "p95_response_time_ms": 2.663755416870117,
+      "success_rate": 0.04
     },
     {
       "endpoint": "/stress/cpu/1000",
       "method": "GET",
-      "requests_per_second": 17590.162971909784,
-      "avg_response_time_ms": 2.2604122161865234,
-      "p95_response_time_ms": 11.427831649780273,
+      "requests_per_second": 18094.963631500385,
+      "avg_response_time_ms": 1.0972232818603516,
+      "p95_response_time_ms": 4.675638675689697,
       "success_rate": 1.0
     },
     {
       "endpoint": "/stress/memory/1",
       "method": "GET",
-      "requests_per_second": 20665.871756718137,
-      "avg_response_time_ms": 1.855802059173584,
-      "p95_response_time_ms": 6.99232816696167,
+      "requests_per_second": 19124.82673086744,
+      "avg_response_time_ms": 1.0325140953063965,
+      "p95_response_time_ms": 4.289448261260986,
       "success_rate": 1.0
     }
   ],
@@ -185,89 +185,89 @@
     {
       "endpoint": "/",
       "method": "GET",
-      "requests_per_second": 9186.491535855164,
-      "avg_response_time_ms": 10.326263189315796,
-      "p95_response_time_ms": 16.387999057769775,
+      "requests_per_second": 8481.480208280673,
+      "avg_response_time_ms": 5.439726829528809,
+      "p95_response_time_ms": 9.228622913360596,
       "success_rate": 1.0
     },
     {
       "endpoint": "/health",
       "method": "GET",
-      "requests_per_second": 9448.056350845736,
-      "avg_response_time_ms": 10.07463824748993,
-      "p95_response_time_ms": 13.299691677093506,
+      "requests_per_second": 9879.294791016477,
+      "avg_response_time_ms": 4.812714338302612,
+      "p95_response_time_ms": 7.546389102935791,
       "success_rate": 1.0
     },
     {
       "endpoint": "/echo",
       "method": "POST",
-      "requests_per_second": 8603.515206339145,
-      "avg_response_time_ms": 10.616839170455933,
-      "p95_response_time_ms": 25.074517726898193,
+      "requests_per_second": 8032.310759337315,
+      "avg_response_time_ms": 5.5973381996154785,
+      "p95_response_time_ms": 13.120484352111816,
       "success_rate": 1.0
     },
     {
       "endpoint": "/echo/test",
       "method": "GET",
-      "requests_per_second": 10119.460817073965,
-      "avg_response_time_ms": 9.254629135131836,
-      "p95_response_time_ms": 26.248323917388916,
+      "requests_per_second": 11069.53985827582,
+      "avg_response_time_ms": 4.268000841140747,
+      "p95_response_time_ms": 7.111334800720215,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items",
       "method": "GET",
-      "requests_per_second": 231.2215180295886,
-      "avg_response_time_ms": 423.034805893898,
-      "p95_response_time_ms": 494.5200204849243,
+      "requests_per_second": 9580.389263615205,
+      "avg_response_time_ms": 4.924551486968994,
+      "p95_response_time_ms": 8.768022060394287,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items/1",
       "method": "GET",
-      "requests_per_second": 9326.354269043817,
-      "avg_response_time_ms": 10.073373198509216,
-      "p95_response_time_ms": 13.265180587768555,
+      "requests_per_second": 10086.340900346288,
+      "avg_response_time_ms": 4.691576957702637,
+      "p95_response_time_ms": 7.256460189819336,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items",
       "method": "POST",
-      "requests_per_second": 1918.067766815717,
-      "avg_response_time_ms": 12.81897783279419,
-      "p95_response_time_ms": 15.70289134979248,
+      "requests_per_second": 5512.365782176136,
+      "avg_response_time_ms": 4.375329494476318,
+      "p95_response_time_ms": 8.330345153808594,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items/1",
       "method": "PUT",
-      "requests_per_second": 4711.811702959441,
-      "avg_response_time_ms": 4.001996040344238,
-      "p95_response_time_ms": 6.800901889801025,
+      "requests_per_second": 4247.293230341744,
+      "avg_response_time_ms": 4.51971435546875,
+      "p95_response_time_ms": 6.663334369659424,
       "success_rate": 1.0
     },
     {
       "endpoint": "/db/items/2",
       "method": "DELETE",
-      "requests_per_second": 7039.312567132116,
-      "avg_response_time_ms": 1.300654411315918,
-      "p95_response_time_ms": 3.1596779823303223,
-      "success_rate": 0.0
+      "requests_per_second": 8067.83103793183,
+      "avg_response_time_ms": 1.1174583435058594,
+      "p95_response_time_ms": 3.191840648651123,
+      "success_rate": 0.02
     },
     {
       "endpoint": "/stress/cpu/1000",
       "method": "GET",
-      "requests_per_second": 11070.65012260239,
-      "avg_response_time_ms": 4.167414665222168,
-      "p95_response_time_ms": 7.111787796020508,
+      "requests_per_second": 11967.176818342634,
+      "avg_response_time_ms": 1.958512306213379,
+      "p95_response_time_ms": 3.675854206085205,
       "success_rate": 1.0
     },
     {
       "endpoint": "/stress/memory/1",
       "method": "GET",
-      "requests_per_second": 4368.679856471042,
-      "avg_response_time_ms": 11.017236709594727,
-      "p95_response_time_ms": 15.859079360961914,
+      "requests_per_second": 4493.691716950082,
+      "avg_response_time_ms": 5.335395812988281,
+      "p95_response_time_ms": 8.015036582946777,
       "success_rate": 1.0
     }
   ],
@@ -275,112 +275,112 @@
     {
       "endpoint": "/",
       "method": "GET",
-      "fastapi_rps": 2407.0438519092404,
-      "rust_rps": 18468.40476075154,
-      "nodejs_rps": 9186.491535855164,
-      "fastapi_avg_ms": 40.439595460891724,
-      "rust_avg_ms": 4.074153542518616,
-      "nodejs_avg_ms": 10.326263189315796
+      "fastapi_rps": 4175.4310516465575,
+      "rust_rps": 20276.14945445932,
+      "nodejs_rps": 8481.480208280673,
+      "fastapi_avg_ms": 11.540446758270264,
+      "rust_avg_ms": 1.9377610683441162,
+      "nodejs_avg_ms": 5.439726829528809
     },
     {
       "endpoint": "/health",
       "method": "GET",
-      "fastapi_rps": 2282.9275089699377,
-      "rust_rps": 16380.160899789113,
-      "nodejs_rps": 9448.056350845736,
-      "fastapi_avg_ms": 42.6387175321579,
-      "rust_avg_ms": 4.846705079078674,
-      "nodejs_avg_ms": 10.07463824748993
+      "fastapi_rps": 1110.917054625135,
+      "rust_rps": 19027.741107194543,
+      "nodejs_rps": 9879.294791016477,
+      "fastapi_avg_ms": 44.24685502052307,
+      "rust_avg_ms": 2.0671019554138184,
+      "nodejs_avg_ms": 4.812714338302612
     },
     {
       "endpoint": "/echo",
       "method": "POST",
-      "fastapi_rps": 2547.5073560472647,
-      "rust_rps": 15262.143058575237,
-      "nodejs_rps": 8603.515206339145,
-      "fastapi_avg_ms": 38.13127851486206,
-      "rust_avg_ms": 5.255893349647522,
-      "nodejs_avg_ms": 10.616839170455933
+      "fastapi_rps": 4085.988530056726,
+      "rust_rps": 15888.839221450273,
+      "nodejs_rps": 8032.310759337315,
+      "fastapi_avg_ms": 11.760493040084839,
+      "rust_avg_ms": 2.5795106887817383,
+      "nodejs_avg_ms": 5.5973381996154785
     },
     {
       "endpoint": "/echo/test",
       "method": "GET",
-      "fastapi_rps": 3011.40359001642,
-      "rust_rps": 15823.919776957002,
-      "nodejs_rps": 10119.460817073965,
-      "fastapi_avg_ms": 32.256834745407104,
-      "rust_avg_ms": 5.095510005950928,
-      "nodejs_avg_ms": 9.254629135131836
+      "fastapi_rps": 5042.964288204839,
+      "rust_rps": 13412.373408715172,
+      "nodejs_rps": 11069.53985827582,
+      "fastapi_avg_ms": 9.462547540664673,
+      "rust_avg_ms": 3.1460161209106445,
+      "nodejs_avg_ms": 4.268000841140747
     },
     {
       "endpoint": "/db/items",
       "method": "GET",
-      "fastapi_rps": 8.958888578896218,
-      "rust_rps": 115.15274162127537,
-      "nodejs_rps": 231.2215180295886,
-      "fastapi_avg_ms": 11068.903551578522,
-      "rust_avg_ms": 847.1205171346664,
-      "nodejs_avg_ms": 423.034805893898
+      "fastapi_rps": 922.7545019521862,
+      "rust_rps": 17421.678739948162,
+      "nodejs_rps": 9580.389263615205,
+      "fastapi_avg_ms": 53.520814657211304,
+      "rust_avg_ms": 2.2876839637756348,
+      "nodejs_avg_ms": 4.924551486968994
     },
     {
       "endpoint": "/db/items/1",
       "method": "GET",
-      "fastapi_rps": 1292.6830320681738,
-      "rust_rps": 17321.88536336567,
-      "nodejs_rps": 9326.354269043817,
-      "fastapi_avg_ms": 76.17272448539734,
-      "rust_avg_ms": 4.480503559112549,
-      "nodejs_avg_ms": 10.073373198509216
+      "fastapi_rps": 1004.8860660627565,
+      "rust_rps": 18206.578027807078,
+      "nodejs_rps": 10086.340900346288,
+      "fastapi_avg_ms": 49.07564067840576,
+      "rust_avg_ms": 2.154413938522339,
+      "nodejs_avg_ms": 4.691576957702637
     },
     {
       "endpoint": "/db/items",
       "method": "POST",
-      "fastapi_rps": 551.5949855575177,
-      "rust_rps": 1841.8511677825,
-      "nodejs_rps": 1918.067766815717,
-      "fastapi_avg_ms": 36.91169357299805,
-      "rust_avg_ms": 12.37665319442749,
-      "nodejs_avg_ms": 12.81897783279419
+      "fastapi_rps": 1033.6261482054308,
+      "rust_rps": 5005.769226178968,
+      "nodejs_rps": 5512.365782176136,
+      "fastapi_avg_ms": 20.396825313568115,
+      "rust_avg_ms": 3.1212644577026367,
+      "nodejs_avg_ms": 4.375329494476318
     },
     {
       "endpoint": "/db/items/1",
       "method": "PUT",
-      "fastapi_rps": 794.7255572339037,
-      "rust_rps": 13754.34178078598,
-      "nodejs_rps": 4711.811702959441,
-      "fastapi_avg_ms": 21.713671684265137,
-      "rust_avg_ms": 1.1734981536865234,
-      "nodejs_avg_ms": 4.001996040344238
+      "fastapi_rps": 929.2261883662401,
+      "rust_rps": 5378.636792646395,
+      "nodejs_rps": 4247.293230341744,
+      "fastapi_avg_ms": 17.347834587097168,
+      "rust_avg_ms": 2.49619197845459,
+      "nodejs_avg_ms": 4.51971435546875
     },
     {
       "endpoint": "/db/items/2",
       "method": "DELETE",
-      "fastapi_rps": 1385.8687319922815,
-      "rust_rps": 11577.839732795981,
-      "nodejs_rps": 7039.312567132116,
-      "fastapi_avg_ms": 6.907334327697754,
-      "rust_avg_ms": 0.6779980659484863,
-      "nodejs_avg_ms": 1.300654411315918
+      "fastapi_rps": 1154.3712380380964,
+      "rust_rps": 14511.65622945715,
+      "nodejs_rps": 8067.83103793183,
+      "fastapi_avg_ms": 8.357899188995361,
+      "rust_avg_ms": 0.5706357955932617,
+      "nodejs_avg_ms": 1.1174583435058594
     },
     {
       "endpoint": "/stress/cpu/1000",
       "method": "GET",
-      "fastapi_rps": 2079.4383048005566,
-      "rust_rps": 17590.162971909784,
-      "nodejs_rps": 11070.65012260239,
-      "fastapi_avg_ms": 23.407607078552246,
-      "rust_avg_ms": 2.2604122161865234,
-      "nodejs_avg_ms": 4.167414665222168
+      "fastapi_rps": 3073.254512095758,
+      "rust_rps": 18094.963631500385,
+      "nodejs_rps": 11967.176818342634,
+      "fastapi_avg_ms": 7.771179676055908,
+      "rust_avg_ms": 1.0972232818603516,
+      "nodejs_avg_ms": 1.958512306213379
     },
     {
       "endpoint": "/stress/memory/1",
       "method": "GET",
-      "fastapi_rps": 2249.328039161427,
-      "rust_rps": 20665.871756718137,
-      "nodejs_rps": 4368.679856471042,
-      "fastapi_avg_ms": 21.59410071372986,
-      "rust_avg_ms": 1.855802059173584,
-      "nodejs_avg_ms": 11.017236709594727
+      "fastapi_rps": 4331.813074228303,
+      "rust_rps": 19124.82673086744,
+      "nodejs_rps": 4493.691716950082,
+      "fastapi_avg_ms": 5.53116512298584,
+      "rust_avg_ms": 1.0325140953063965,
+      "nodejs_avg_ms": 5.335395812988281
     }
   ]
 }

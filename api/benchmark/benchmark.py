@@ -603,7 +603,7 @@ class CRUDBenchmark:
         stress_ops = []
 
         for comp in self.comparison_results:
-            if comp.endpoint in ["/", "/health", "/echo"]:
+            if comp.endpoint in ["/", "/health"] or "/echo" in comp.endpoint:
                 basic_ops.append(comp)
             elif comp.method == "GET" and "/db/" in comp.endpoint:
                 read_ops.append(comp)
@@ -611,6 +611,9 @@ class CRUDBenchmark:
                 write_ops.append(comp)
             elif "/stress/" in comp.endpoint:
                 stress_ops.append(comp)
+            else:
+                # Debug: print unmatched operations
+                print(f"⚠️ Unmatched operation: {comp.endpoint} ({comp.method})")
 
         # Print comparison by operation type
         self._print_operation_comparison("🔧 Basic Operations", basic_ops)
