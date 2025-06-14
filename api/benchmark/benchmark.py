@@ -831,7 +831,7 @@ class CRUDBenchmark:
             basic_ops = [
                 c
                 for c in self.comparison_results
-                if c.endpoint in ["/", "/health", "/echo"]
+                if c.endpoint in ["/", "/health"] or "/echo" in c.endpoint
             ]
             read_ops = [
                 c
@@ -843,39 +843,106 @@ class CRUDBenchmark:
                 for c in self.comparison_results
                 if c.method in ["POST", "PUT", "DELETE"] and "/db/" in c.endpoint
             ]
+            stress_ops = [
+                c for c in self.comparison_results if "/stress/" in c.endpoint
+            ]
 
-            fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(20, 12))
+            # Create a 2x3 grid to accommodate 5 charts
+            fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(
+                2, 3, figsize=(24, 12)
+            )
 
             # Basic Operations RPS
             if basic_ops:
                 self._plot_operation_comparison(
                     ax1, basic_ops, "Basic Operations - RPS", "rps"
                 )
+            else:
+                ax1.text(
+                    0.5,
+                    0.5,
+                    "No Basic Operations Data",
+                    ha="center",
+                    va="center",
+                    transform=ax1.transAxes,
+                )
+                ax1.set_title("Basic Operations - RPS")
 
             # Database Read Operations RPS
             if read_ops:
                 self._plot_operation_comparison(
                     ax2, read_ops, "Database READ Operations - RPS", "rps"
                 )
+            else:
+                ax2.text(
+                    0.5,
+                    0.5,
+                    "No Read Operations Data",
+                    ha="center",
+                    va="center",
+                    transform=ax2.transAxes,
+                )
+                ax2.set_title("Database READ Operations - RPS")
 
             # Database Write Operations RPS
             if write_ops:
                 self._plot_operation_comparison(
                     ax3, write_ops, "Database WRITE Operations - RPS", "rps"
                 )
+            else:
+                ax3.text(
+                    0.5,
+                    0.5,
+                    "No Write Operations Data",
+                    ha="center",
+                    va="center",
+                    transform=ax3.transAxes,
+                )
+                ax3.set_title("Database WRITE Operations - RPS")
+
+            # Stress Test Operations RPS
+            if stress_ops:
+                self._plot_operation_comparison(
+                    ax4, stress_ops, "Stress Test Operations - RPS", "rps"
+                )
+            else:
+                ax4.text(
+                    0.5,
+                    0.5,
+                    "No Stress Test Data",
+                    ha="center",
+                    va="center",
+                    transform=ax4.transAxes,
+                )
+                ax4.set_title("Stress Test Operations - RPS")
 
             # Combined Latency Comparison
             if self.comparison_results:
                 self._plot_operation_comparison(
-                    ax4,
-                    self.comparison_results[:6],
+                    ax5,
+                    self.comparison_results[
+                        :8
+                    ],  # Show more operations in latency chart
                     "Response Time Comparison",
                     "latency",
                 )
+            else:
+                ax5.text(
+                    0.5,
+                    0.5,
+                    "No Latency Data",
+                    ha="center",
+                    va="center",
+                    transform=ax5.transAxes,
+                )
+                ax5.set_title("Response Time Comparison")
+
+            # Hide the last subplot (ax6) since we only need 5
+            ax6.axis("off")
 
             plt.tight_layout()
             plt.savefig(filename, dpi=300, bbox_inches="tight")
-            print(f"📊 Comprehensive CRUD chart saved to {filename}")
+            print(f"📊 Comprehensive CRUD chart with stress tests saved to {filename}")
 
         except ImportError as e:
             missing_package = (
